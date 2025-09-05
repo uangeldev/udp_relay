@@ -1,0 +1,9 @@
+# UDP Log Relay Service
+# This service uses only Python standard library modules
+# No external dependencies required
+
+# Python 3.6+ required
+# Standard library modules used:
+# - os, sys, time, socket, signal
+# - logging, logging.handlers
+# - typing, pathlib
