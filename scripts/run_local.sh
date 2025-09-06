@@ -18,13 +18,8 @@ echo ""
 echo -e "${GREEN}Creating directories...${NC}"
 mkdir -p logs run
 
-# Create sample log file if it doesn't exist
-if [ ! -f "logs/app.log" ]; then
-    echo -e "${YELLOW}Creating sample log file...${NC}"
-    touch logs/app.log
-    chmod 644 logs/app.log
-    echo "$(date): UDP Log Relay service started locally" | tee -a logs/app.log
-fi
+# Note: The service monitors the log file specified in LOG_FILE_PATH environment variable
+# Default is /home/iss/var/logs/platform/receiver/rawdata/nmea_rawdata.log
 
 # Install dependencies if needed
 if [ ! -d "venv" ]; then

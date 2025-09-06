@@ -70,13 +70,8 @@ create_directories() {
     # Create run directory
     sudo mkdir -p "$RUN_DIR"
     
-    # Create log file if it doesn't exist
-    if [ ! -f "$LOG_DIR/app.log" ]; then
-        echo -e "${YELLOW}Creating sample log file...${NC}"
-        touch "$LOG_DIR/app.log"
-        chmod 644 "$LOG_DIR/app.log"
-        echo "$(date): UDP Log Relay service started" | tee -a "$LOG_DIR/app.log"
-    fi
+    # Note: The service monitors the log file specified in LOG_FILE_PATH environment variable
+    # Default is /home/iss/var/logs/platform/receiver/rawdata/nmea_rawdata.log
     
     echo -e "${GREEN}Directories created successfully${NC}"
 }
@@ -144,7 +139,7 @@ StandardError=journal
 SyslogIdentifier=udp-log-relay
 
 # Environment variables
-Environment=LOG_FILE_PATH=$LOG_DIR/app.log
+Environment=LOG_FILE_PATH=/home/iss/var/logs/platform/receiver/rawdata/nmea_rawdata.log
 Environment=UDP_HOST=127.0.0.1
 Environment=UDP_PORT=514
 Environment=POLL_INTERVAL=0.1
@@ -200,9 +195,9 @@ verify_deployment() {
     echo -e "${GREEN}Recent logs:${NC}"
     sudo journalctl -u udp-log-relay --no-pager -n 10
     
-    # Test log entry
+    # Test log entry (using the configured log file path)
     echo -e "${GREEN}Creating test log entry...${NC}"
-    echo "$(date): Test message from deployment" | sudo tee -a /var/log/app.log
+    echo "$(date): Test message from deployment" | sudo tee -a /home/iss/var/logs/platform/receiver/rawdata/nmea_rawdata.log
     
     sleep 2
     
@@ -231,7 +226,7 @@ show_deployment_info() {
     echo -e "  Disable service: sudo systemctl disable udp-log-relay"
     echo ""
     echo -e "${GREEN}Test the service:${NC}"
-    echo -e "  echo \"\$(date): Test message\" | sudo tee -a /var/log/app.log"
+    echo -e "  echo \"\$(date): Test message\" | sudo tee -a /home/iss/var/logs/platform/receiver/rawdata/nmea_rawdata.log"
     echo ""
 }
 

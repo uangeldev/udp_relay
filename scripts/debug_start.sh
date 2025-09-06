@@ -203,23 +203,31 @@ test_network() {
     fi
 }
 
-# Function to create test log file
-create_test_log() {
+# Function to check log file path
+check_log_file_path() {
     echo
-    echo "=== Test Log File Creation ==="
+    echo "=== Log File Path Check ==="
     
-    local test_log_file="./logs/app.log"
+    # Get log file path from config
+    local log_file_path=$(python3 -c "from config import Config; print(Config.LOG_FILE_PATH)" 2>/dev/null || echo "Not available")
+    print_status "INFO" "Configured log file path: $log_file_path"
     
-    if [ ! -f "$test_log_file" ]; then
-        print_status "WARNING" "Test log file not found: $test_log_file"
-        echo "$(date): Test log entry for UDP relay service" > "$test_log_file"
-        if [ -f "$test_log_file" ]; then
-            print_status "SUCCESS" "Test log file created: $test_log_file"
-        else
-            print_status "ERROR" "Failed to create test log file"
-        fi
+    # Check if log file directory exists
+    local log_dir=$(dirname "$log_file_path")
+    if [ -d "$log_dir" ]; then
+        print_status "SUCCESS" "Log directory exists: $log_dir"
     else
-        print_status "SUCCESS" "Test log file exists: $test_log_file"
+        print_status "WARNING" "Log directory does not exist: $log_dir"
+        print_status "INFO" "The service will create the directory when needed"
+    fi
+    
+    # Check if log file exists
+    if [ -f "$log_file_path" ]; then
+        print_status "SUCCESS" "Log file exists: $log_file_path"
+        print_status "INFO" "Log file size: $(ls -lh "$log_file_path" | awk '{print $5}')"
+    else
+        print_status "WARNING" "Log file does not exist: $log_file_path"
+        print_status "INFO" "The service will monitor this file when it's created"
     fi
 }
 
@@ -275,7 +283,7 @@ main() {
     check_configuration
     test_script_execution
     test_network
-    create_test_log
+    check_log_file_path
     test_service_foreground
     
     echo

@@ -69,7 +69,7 @@ cd /Users/syjung/workspace/iss/udp_relay
 환경 변수를 통해 서비스를 설정할 수 있습니다:
 
 ### 로그 파일 설정
-- `LOG_FILE_PATH`: 모니터링할 로그 파일 경로 (기본값: `/var/log/app.log`)
+- `LOG_FILE_PATH`: 모니터링할 로그 파일 경로 (기본값: `/home/iss/var/logs/platform/receiver/rawdata/nmea_rawdata.log`)
 - `LOG_FILE_ENCODING`: 로그 파일 인코딩 (기본값: `utf-8`)
 
 ### UDP 설정
@@ -195,8 +195,8 @@ python3 udp_receiver.py --host 127.0.0.1 --port 514
 
 #### 수동 테스트
 ```bash
-# 수동으로 테스트 메시지 생성
-echo "$(date): Test message" | tee -a logs/app.log
+# 수동으로 테스트 메시지 생성 (실제 로그 파일 경로 사용)
+echo "$(date): Test message" | sudo tee -a /home/iss/var/logs/platform/receiver/rawdata/nmea_rawdata.log
 ```
 
 ## 보안 고려사항
@@ -221,10 +221,10 @@ echo "$(date): Test message" | tee -a logs/app.log
 
 2. **로그 파일 준비**
    ```bash
-   # 모니터링할 로그 파일 생성 (프로젝트 디렉토리 하위)
-   mkdir -p logs
-   touch logs/app.log
-   chmod 644 logs/app.log
+   # 모니터링할 로그 파일 디렉토리 생성
+   sudo mkdir -p /home/iss/var/logs/platform/receiver/rawdata
+   sudo touch /home/iss/var/logs/platform/receiver/rawdata/nmea_rawdata.log
+   sudo chmod 644 /home/iss/var/logs/platform/receiver/rawdata/nmea_rawdata.log
    ```
 
 3. **방화벽 설정**
@@ -252,7 +252,7 @@ echo "$(date): Test message" | tee -a logs/app.log
    sudo journalctl -u udp-log-relay -f
    
    # 테스트 메시지 전송
-   echo "$(date): Test message" | tee -a logs/app.log
+   echo "$(date): Test message" | sudo tee -a /home/iss/var/logs/platform/receiver/rawdata/nmea_rawdata.log
    ```
 
 3. **모니터링 설정**
@@ -283,10 +283,10 @@ sudo systemctl restart udp-log-relay
 1. **로그 파일을 찾을 수 없음**
    ```bash
    # 로그 파일 경로 확인
-   ls -la /var/log/app.log
+   ls -la /home/iss/var/logs/platform/receiver/rawdata/nmea_rawdata.log
    
    # 권한 확인
-   ls -la /var/log/
+   ls -la /home/iss/var/logs/platform/receiver/rawdata/
    ```
 
 2. **UDP 전송 실패**

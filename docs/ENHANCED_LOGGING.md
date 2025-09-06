@@ -48,7 +48,7 @@ export STATS_LOG_INTERVAL=60
 # 기존 설정들
 export UDP_HOST=127.0.0.1
 export UDP_PORT=514
-export LOG_FILE_PATH=./logs/app.log
+export LOG_FILE_PATH=/home/iss/var/logs/platform/receiver/rawdata/nmea_rawdata.log
 ```
 
 ## 로그 레벨별 정보
